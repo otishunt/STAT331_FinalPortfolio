@@ -643,6 +643,8 @@ get_fit_now_member |>
 ```{r}
 #| label: r-3-example
 
+#Lab 3 Question 8
+
 teacher_evals_clean |>
   filter(if_any(.cols = everything(),
                 .fns = ~ is.na(.x)))

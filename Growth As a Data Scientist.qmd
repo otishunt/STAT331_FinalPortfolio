@@ -1,0 +1,11 @@
+---
+title: "Growth as a Data Scientist"
+format: html
+editor: visual
+---
+
+## Growth As A Data Scientist
+
+Describe how you have improved as a practitioner and student of data science this quarter through your work in the course. Focus specifically on data science concepts and the skills we employed in learning them. Don’t just give a laundry list of topics that you learned (those are in the syllabus, so we know them already). Focus instead on a small number of specific areas of growth for you that happened in STAT 331. Identify at least one artifact in your portfolio that illustrates each area of growth. Explain in this essay how this artifact shows growth in the way you are describing.
+
+I think I've improved in that I've gotten better at slowing myself down in favor of splitting problems in different parts. As questions become trickier and denser, although they are short-winded questions, it is more than important to recognize how you need to approach the problem in terms of going step by step through your code, and how subsequent actions affect previous and the next actions. In lab 3, this was especially important with grouping, and often running into the issue that `summarise()` just removes all other variables left in the dataframe except for the one being created. Anyways, taking time to think about a problem before touching a keyboard has been very valuable for me, and not just for dplyr pipelines, but for all sorts of problems – including graphing and activities like Challenge 4 which force you to actually ask a real research question. Lab 3 Question 12, as shown in dvs-4-across, originally saved two objects and required them both to be called. If I had taken more time to be methodical in my thinking the first time, I wouldn't have done that, but the second time around I remembered I could filter instead of summarizing a max and a min. Just the revision there was a large moment of learning for me.
