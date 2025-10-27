@@ -23,6 +23,10 @@ execute:
 ```{r}
 #| label: wd-1-csv-1
 
+#Lab 2 Question 1
+
+surveys <- read_csv(here::here("Week 2","Lab 2", "surveys.csv"))
+
 ```
 
 -   `csv` Example 2
@@ -30,12 +34,19 @@ execute:
 ```{r}
 #| label: wd-1-csv-2
 
+#Lab 3 Question 2
+
+teacher_evals <- read_csv(here::here("Week 3","Lab 3", "teacher_evals.csv"))
+
+
 ```
 
 -   `xlsx`
 
 ```{r}
 #| label: wd-1-xlsx
+
+#None yet
 
 ```
 
@@ -46,6 +57,15 @@ execute:
 ```{r}
 #| label: wd-2-ex-1
 
+#Lab 3 Question 5
+
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = 'gender') |> 
+  mutate(teacher_id = as.character(teacher_id)) |> 
+  filter(no_participants > 10) |> 
+  select(course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg,
+         percent_failed_cur, academic_degree, seniority, sex)
+
 ```
 
 -   Example removing specified columns
@@ -53,12 +73,24 @@ execute:
 ```{r}
 #| label: wd-2-ex-2
 
+#Lab 3 Question 5 (REVISED TO REMOVE EVERYTHING BUT THE ONES I WANTED)
+
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = 'gender') |> 
+  mutate(teacher_id = as.character(teacher_id)) |> 
+  filter(no_participants > 10) |> 
+  select(-c(stud_grade_avg, stud_grade_avg_cur, stud_grade_std, stud_grade_std_cur, percent_failed, stud_grade_var_coef, stud_grade_var_coef_cur, class_duration, weekday, time_of_day, SET_score_1sem, maximum_score))
+
 ```
 
 -   Example selecting columns based on logical values (e.g., `starts_with()`, `ends_with()`, `contains()`, `where()`)
 
 ```{r}
 #| label: wd-2-ex-3
+
+#Haven't used yet! Couldn't find an instance where it would really make sense to use either, but will look out for it in the future
+
+
 
 ```
 
@@ -69,12 +101,27 @@ execute:
 ```{r}
 #| label: wd-3-numeric-ex-1
 
+#Lab 3 Question 5
+
+teacher_evals_clean <- teacher_evals |>
+  rename(sex = 'gender') |> 
+  mutate(teacher_id = as.character(teacher_id)) |> 
+  filter(no_participants > 10) |> 
+  select(course_id, teacher_id, question_no, no_participants, resp_share, SET_score_avg,
+         percent_failed_cur, academic_degree, seniority, sex)
+
 ```
 
 -   Numeric Example 2
 
 ```{r}
 #| label: wd-3-numeric-ex-1
+
+teacher_evals_clean |> 
+  group_by(teacher_id, course_id) |>
+  summarize(all_questions = n_distinct(question_no), .groups = "keep") |>
+  filter(all_questions == 9) |> 
+  n_distinct()
 
 ```
 
@@ -83,6 +130,28 @@ execute:
 ```{r}
 #| label: wd-3-character
 
+#Lab 5 Gym Investigation
+
+get_fit_now_member |>
+  right_join(get_fit_now_check_in, join_by(id == membership_id)) |> 
+  right_join(person, join_by(person_id == id, name == name)) |>
+  right_join(drivers_license, join_by(license_id == id)) |>  #Joins
+  mutate(check_in_date = make_date(year = str_sub(check_in_date, #Turn check_in_date into an actual date, not int
+                                    start = 1,
+                                    end = 4),
+                                    month = str_sub(check_in_date,
+                                    start = 5,
+                                    end = 6),
+                                    day = str_sub(check_in_date,
+                                    start = 7,
+                                    end = 8))) |> 
+  filter(
+    membership_status == "gold",
+    str_starts(id, "48Z"),
+    check_in_date == as.Date("2018-01-09"),
+    str_detect(as.character(plate_number), "H42W")) |> 
+  select(person_id, name)
+
 ```
 
 -   Character Example 2 (example must use functions from **stringr**)
@@ -90,12 +159,56 @@ execute:
 ```{r}
 #| label: wd-3-string
 
+#Lab 5 Gym Investigation
+
+get_fit_now_member |>
+  right_join(get_fit_now_check_in, join_by(id == membership_id)) |> 
+  right_join(person, join_by(person_id == id, name == name)) |>
+  right_join(drivers_license, join_by(license_id == id)) |>  #Joins
+  mutate(check_in_date = make_date(year = str_sub(check_in_date, #Turn check_in_date into an actual date, not int
+                                    start = 1,
+                                    end = 4),
+                                    month = str_sub(check_in_date,
+                                    start = 5,
+                                    end = 6),
+                                    day = str_sub(check_in_date,
+                                    start = 7,
+                                    end = 8))) |> 
+  filter(
+    membership_status == "gold",
+    str_starts(id, "48Z"),
+    check_in_date == as.Date("2018-01-09"),
+    str_detect(as.character(plate_number), "H42W")) |> 
+  select(person_id, name)
+
 ```
 
 -   Date (example must use functions from **lubridate**)
 
 ```{r}
 #| label: wd-3-date
+
+#Lab 5 Gym Investigation
+
+get_fit_now_member |>
+  right_join(get_fit_now_check_in, join_by(id == membership_id)) |> 
+  right_join(person, join_by(person_id == id, name == name)) |>
+  right_join(drivers_license, join_by(license_id == id)) |>  #Joins
+  mutate(check_in_date = make_date(year = str_sub(check_in_date, #Turn check_in_date into an actual date, not int
+                                    start = 1,
+                                    end = 4),
+                                    month = str_sub(check_in_date,
+                                    start = 5,
+                                    end = 6),
+                                    day = str_sub(check_in_date,
+                                    start = 7,
+                                    end = 8))) |> 
+  filter(
+    membership_status == "gold",
+    str_starts(id, "48Z"),
+    check_in_date == as.Date("2018-01-09"),
+    str_detect(as.character(plate_number), "H42W")) |> 
+  select(person_id, name)
 
 ```
 
@@ -106,12 +219,26 @@ execute:
 ```{r}
 #| label: wd-4-numeric-ex-1
 
+#Challenge 3 Question 1
+
+teacher_evals_compare <- teacher_evals |> 
+  filter(question_no == 903) |> 
+  mutate(SET_level = if_else(SET_score_avg >= 4, 
+                             "excellent",
+                             "standard"),
+         sen_level = case_when(seniority <= 4 ~ "junior",
+                               seniority >= 5 & seniority <= 8 ~ "senior",
+                               seniority > 8 ~ "very senior")) |> 
+  select(course_id, SET_level, sen_level)
+
 ```
 
 -   Numeric Example 2
 
 ```{r}
 #| label: wd-4-numeric-ex-2
+
+#Don't have a good example yet - besides just a summarise call?
 
 ```
 
@@ -120,12 +247,68 @@ execute:
 ```{r}
 #| label: wd-4-factor-ex-1
 
+#Lab 4 Question 4
+
+ca_childcare <- ca_childcare |> 
+  mutate(county_name = str_remove(county_name, " County"),
+        Region = fct_collapse(
+    as.factor(county_name),
+    "Superior" = superior_counties,
+    "North Coast" = north_coast_counties,
+    "San Francisco" = san_fran_counties,
+    "North San Joaquin" = n_san_joaquin_counties,
+    "Central Coast" = central_coast_counties,
+    "South San Joaquin" = s_san_joaquin_counties,
+    "Inland" = inland_counties,
+    "Los Angeles" = la_county,
+    "Orange" = orange_county,
+    "San Diego Imperial" = san_diego_imperial_counties
+  ))
+
 ```
 
 -   Factor Example 2 (reordering levels)
 
 ```{r}
 #| label: wd-4-factor-ex-2
+
+#Lab 4 Question 7
+
+ca_childcare |> 
+  pivot_longer(
+    cols = c(mc_infant, mc_toddler, mc_preschool),
+    names_to = "age_group",
+    values_to = "median_price"
+  ) |> 
+  mutate(
+    age_group = factor(age_group, 
+          levels = c("mc_infant", "mc_toddler", "mc_preschool")),
+          Region = fct_reorder2(Region, study_year, median_price)) |> 
+  ggplot(mapping = aes(x = study_year, y = median_price, color = Region)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2008,2018,2)) +
+  scale_y_continuous(breaks = seq(100,500,100),
+                     limits = c(100, 500)) +
+  facet_wrap(~ age_group,
+      labeller = as_labeller(c(
+      mc_infant = "Infant",
+      mc_toddler = "Toddler",
+      mc_preschool = "Preschool"
+    ))) +
+  labs(x = "Study Year",
+       y = "",
+       color = "California Region",
+       title = "Weekly Median Price for Center-Based Childcare ($)") +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, 
+        axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8),
+        axis.title.x = element_text(size = 8))
 
 ```
 
@@ -134,12 +317,36 @@ execute:
 ```{r}
 #| label: wd-4-string
 
+#Don't have yet!
+
 ```
 
 -   Date (example must use functions from **lubridate**)
 
 ```{r}
 #| label: wd-4-date
+
+#Lab 5 Gym Investigation
+
+get_fit_now_member |>
+  right_join(get_fit_now_check_in, join_by(id == membership_id)) |> 
+  right_join(person, join_by(person_id == id, name == name)) |>
+  right_join(drivers_license, join_by(license_id == id)) |>  #Joins
+  mutate(check_in_date = make_date(year = str_sub(check_in_date, #Turn check_in_date into an actual date, not int
+                                    start = 1,
+                                    end = 4),
+                                    month = str_sub(check_in_date,
+                                    start = 5,
+                                    end = 6),
+                                    day = str_sub(check_in_date,
+                                    start = 7,
+                                    end = 8))) |> 
+  filter(
+    membership_status == "gold",
+    str_starts(id, "48Z"),
+    check_in_date == as.Date("2018-01-09"),
+    str_detect(as.character(plate_number), "H42W")) |> 
+  select(person_id, name)
 
 ```
 
@@ -150,12 +357,54 @@ execute:
 ```{r}
 #| label: wd-5-left-ex-1
 
+#Lab 5 Looking for the Hirer of the Hitman
+
+person |> 
+  left_join(drivers_license, join_by(license_id == id)) |> 
+  left_join(income, by = "ssn") |> 
+  left_join(facebook_event_checkin, join_by(id == person_id)) |> 
+  filter(annual_income > median(annual_income, na.rm = TRUE),
+         gender == "female",
+         hair_color == "red",
+         height >= 65,
+         height <= 67,
+         car_make == "Tesla",
+         car_model == "Model S",
+         event_name == "SQL Symphony Concert",
+         str_detect(str_sub(date,
+                            start = 5,
+                            end = 6), pattern = "12")) |> 
+  select(name, id)
+
+
 ```
 
 -   `right_join()` Example 1
 
 ```{r}
 #| label: wd-5-right
+
+#Lab 5 Gym Investigation
+
+get_fit_now_member |>
+  right_join(get_fit_now_check_in, join_by(id == membership_id)) |> 
+  right_join(person, join_by(person_id == id, name == name)) |>
+  right_join(drivers_license, join_by(license_id == id)) |>  #Joins
+  mutate(check_in_date = make_date(year = str_sub(check_in_date, #Turn check_in_date into an actual date, not int
+                                    start = 1,
+                                    end = 4),
+                                    month = str_sub(check_in_date,
+                                    start = 5,
+                                    end = 6),
+                                    day = str_sub(check_in_date,
+                                    start = 7,
+                                    end = 8))) |> 
+  filter(
+    membership_status == "gold",
+    str_starts(id, "48Z"),
+    check_in_date == as.Date("2018-01-09"),
+    str_detect(as.character(plate_number), "H42W")) |> 
+  select(person_id, name)
 
 ```
 
@@ -164,6 +413,28 @@ execute:
 ```{r}
 #| label: wd-5-left-right-ex-2
 
+#Lab 5 Gym Investigation - does this count as 'different' since its multiple joins?
+
+get_fit_now_member |>
+  right_join(get_fit_now_check_in, join_by(id == membership_id)) |> 
+  right_join(person, join_by(person_id == id, name == name)) |>
+  right_join(drivers_license, join_by(license_id == id)) |>  #Joins
+  mutate(check_in_date = make_date(year = str_sub(check_in_date, #Turn check_in_date into an actual date, not int
+                                    start = 1,
+                                    end = 4),
+                                    month = str_sub(check_in_date,
+                                    start = 5,
+                                    end = 6),
+                                    day = str_sub(check_in_date,
+                                    start = 7,
+                                    end = 8))) |> 
+  filter(
+    membership_status == "gold",
+    str_starts(id, "48Z"),
+    check_in_date == as.Date("2018-01-09"),
+    str_detect(as.character(plate_number), "H42W")) |> 
+  select(person_id, name)
+
 ```
 
 -   `inner_join()` Example 1
@@ -171,12 +442,20 @@ execute:
 ```{r}
 #| label: wd-5-inner-ex-1
 
+#Lab 4 Question 2
+
+ca_childcare <- counties |> 
+  filter(state_name == "California") |> 
+  inner_join(childcare_costs, by = join_by(county_fips_code))
+
 ```
 
 -   `inner_join()` Example 2
 
 ```{r}
 #| label: wd-5-inner-ex-2
+
+#Don't have multiple yet
 
 ```
 
@@ -187,12 +466,16 @@ execute:
 ```{r}
 #| label: wd-6-semi
 
+#Don't have one yet
+
 ```
 
 -   `anti_join()`
 
 ```{r}
 #| label: wd-6-anti
+
+#Don't have one yet
 
 ```
 
@@ -203,12 +486,55 @@ execute:
 ```{r}
 #| label: wd-7-long
 
+#Challenge 4 Table of Means
+
+ca_childcare_long <- ca_childcare |> 
+  pivot_longer(
+    cols = c(mfcc_infant, mfcc_toddler, mfcc_preschool,
+             mc_infant, mc_toddler, mc_preschool),
+    names_to = c("type_care", "age_group"),
+    names_sep = "_",
+    values_to = "median_price") |> 
+  mutate(
+     type_care = case_when(
+      type_care == "mfcc" ~ "Family",
+      type_care == "mc" ~ "Center-based"),
+    age_group = factor(age_group, levels = c("infant", "toddler", "preschool"))
+  )
+table <- ca_childcare_long |> 
+  group_by(type_care, age_group) |> 
+  summarise(
+    mean_median_price = mean(median_price, na.rm = TRUE),
+    .groups = 'drop'
+  ) |> 
+  kable()
+
+
 ```
 
 -   `pivot_wider()`
 
 ```{r}
 #| label: wd-7-wide
+
+#Lab 4 Question 5
+
+ca_childcare |> 
+  filter(study_year %in% c("2008","2018")) |> 
+  group_by(Region, study_year) |> 
+  summarise(
+    median_household_income_2018 = median(mhi_2018, na.rm = TRUE),
+    .groups = 'drop'
+  ) |> 
+  pivot_wider(
+    names_from = study_year,
+    values_from = median_household_income_2018,
+    names_prefix = "median_household_income_"
+  ) |> 
+  arrange(desc(median_household_income_2018)) 
+  
+
+
 
 ```
 
@@ -231,6 +557,44 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: r-2-1
 
+#Lab 4 Question 7
+
+ca_childcare |> 
+  pivot_longer(
+    cols = c(mc_infant, mc_toddler, mc_preschool),
+    names_to = "age_group",
+    values_to = "median_price"
+  ) |> 
+  mutate(
+    age_group = factor(age_group, 
+          levels = c("mc_infant", "mc_toddler", "mc_preschool")),
+          Region = fct_reorder2(Region, study_year, median_price)) |> 
+  ggplot(mapping = aes(x = study_year, y = median_price, color = Region)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2008,2018,2)) +
+  scale_y_continuous(breaks = seq(100,500,100),
+                     limits = c(100, 500)) +
+  facet_wrap(~ age_group,
+      labeller = as_labeller(c(
+      mc_infant = "Infant",
+      mc_toddler = "Toddler",
+      mc_preschool = "Preschool"
+    ))) +
+  labs(x = "Study Year",
+       y = "",
+       color = "California Region",
+       title = "Weekly Median Price for Center-Based Childcare ($)") +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, 
+        axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8),
+        axis.title.x = element_text(size = 8))
+
 ```
 
 -   Example of **dplyr** pipeline
@@ -238,12 +602,37 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: r-2-2
 
+#Lab 5 Gym Investigation
+
+get_fit_now_member |>
+  right_join(get_fit_now_check_in, join_by(id == membership_id)) |> 
+  right_join(person, join_by(person_id == id, name == name)) |>
+  right_join(drivers_license, join_by(license_id == id)) |>  #Joins
+  mutate(check_in_date = make_date(year = str_sub(check_in_date, #Turn check_in_date into an actual date, not int
+                                    start = 1,
+                                    end = 4),
+                                    month = str_sub(check_in_date,
+                                    start = 5,
+                                    end = 6),
+                                    day = str_sub(check_in_date,
+                                    start = 7,
+                                    end = 8))) |> 
+  filter(
+    membership_status == "gold",
+    str_starts(id, "48Z"),
+    check_in_date == as.Date("2018-01-09"),
+    str_detect(as.character(plate_number), "H42W")) |> 
+  select(person_id, name)
+
+
 ```
 
 -   Example of function formatting
 
 ```{r}
 #| label: r-2-3
+
+#not there yet!
 
 ```
 
@@ -254,12 +643,18 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: r-3-example
 
+teacher_evals_clean |>
+  filter(if_any(.cols = everything(),
+                .fns = ~ is.na(.x)))
+
 ```
 
 -   Example (function stops)
 
 ```{r}
 #| label: r-3-function-stops
+
+#not there yet!
 
 ```
 
@@ -272,12 +667,61 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-1-num
 
+#Lab 4 Question 8
+
+ca_childcare |> 
+  ggplot(mapping = aes(x = mhi_2018, y = mc_infant)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x = "Median Household Income (2018 Dollars)",
+       y = "Median Weekly Price Charged for Center-Based Infant Childcare",
+       title = "California Median Household Income vs. Center-Based Childcare for Infant")
+
+
 ```
 
 -   At least one numeric variable and one categorical variable
 
 ```{r}
 #| label: dvs-2-num-cat
+
+#Lab 4 Question 7
+
+ca_childcare |> 
+  pivot_longer(
+    cols = c(mc_infant, mc_toddler, mc_preschool),
+    names_to = "age_group",
+    values_to = "median_price"
+  ) |> 
+  mutate(
+    age_group = factor(age_group, 
+          levels = c("mc_infant", "mc_toddler", "mc_preschool")),
+          Region = fct_reorder2(Region, study_year, median_price)) |> 
+  ggplot(mapping = aes(x = study_year, y = median_price, color = Region)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2008,2018,2)) +
+  scale_y_continuous(breaks = seq(100,500,100),
+                     limits = c(100, 500)) +
+  facet_wrap(~ age_group,
+      labeller = as_labeller(c(
+      mc_infant = "Infant",
+      mc_toddler = "Toddler",
+      mc_preschool = "Preschool"
+    ))) +
+  labs(x = "Study Year",
+       y = "",
+       color = "California Region",
+       title = "Weekly Median Price for Center-Based Childcare ($)") +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, 
+        axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8),
+        axis.title.x = element_text(size = 8))
 
 ```
 
@@ -286,12 +730,65 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-2-cat
 
+#Challenge 3 Question 2
+
+teacher_evals_compare |> 
+  ggplot(mapping = aes(x = sen_level,
+         fill = SET_level)) +
+  geom_bar(stat = "count", position = "fill") +
+  scale_fill_manual(values = c("excellent" = "#b896d4", "standard" = "#ba955c")) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Years of Experience",
+                y = "",
+                fill = "Evaluation Rating",
+       title = "Evaluation of Teachers' Use of Activities") +
+  theme_bw() +
+  theme(legend.position = "top")
+
 ```
 
 -   Dates (time series plot)
 
 ```{r}
 #| label: dvs-2-date
+
+#Lab 4 Question 7
+
+ca_childcare |> 
+  pivot_longer(
+    cols = c(mc_infant, mc_toddler, mc_preschool),
+    names_to = "age_group",
+    values_to = "median_price"
+  ) |> 
+  mutate(
+    age_group = factor(age_group, 
+          levels = c("mc_infant", "mc_toddler", "mc_preschool")),
+          Region = fct_reorder2(Region, study_year, median_price)) |> 
+  ggplot(mapping = aes(x = study_year, y = median_price, color = Region)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2008,2018,2)) +
+  scale_y_continuous(breaks = seq(100,500,100),
+                     limits = c(100, 500)) +
+  facet_wrap(~ age_group,
+      labeller = as_labeller(c(
+      mc_infant = "Infant",
+      mc_toddler = "Toddler",
+      mc_preschool = "Preschool"
+    ))) +
+  labs(x = "Study Year",
+       y = "",
+       color = "California Region",
+       title = "Weekly Median Price for Center-Based Childcare ($)") +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, 
+        axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8),
+        axis.title.x = element_text(size = 8))
 
 ```
 
@@ -302,12 +799,88 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-2-ex-1
 
+#Lab 4 Question 7
+
+ca_childcare |> 
+  pivot_longer(
+    cols = c(mc_infant, mc_toddler, mc_preschool),
+    names_to = "age_group",
+    values_to = "median_price"
+  ) |> 
+  mutate(
+    age_group = factor(age_group, 
+          levels = c("mc_infant", "mc_toddler", "mc_preschool")),
+          Region = fct_reorder2(Region, study_year, median_price)) |> 
+  ggplot(mapping = aes(x = study_year, y = median_price, color = Region)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2008,2018,2)) +
+  scale_y_continuous(breaks = seq(100,500,100),
+                     limits = c(100, 500)) +
+  facet_wrap(~ age_group,
+      labeller = as_labeller(c(
+      mc_infant = "Infant",
+      mc_toddler = "Toddler",
+      mc_preschool = "Preschool"
+    ))) +
+  labs(x = "Study Year",
+       y = "",
+       color = "California Region",
+       title = "Weekly Median Price for Center-Based Childcare ($)") +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, 
+        axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8),
+        axis.title.x = element_text(size = 8))
+
 ```
 
 -   I can modify my colors to be accessible to anyone's eyes
 
 ```{r}
 #| label: dvs-2-ex-2
+
+#Lab 4 Question 7
+
+ca_childcare |> 
+  pivot_longer(
+    cols = c(mc_infant, mc_toddler, mc_preschool),
+    names_to = "age_group",
+    values_to = "median_price"
+  ) |> 
+  mutate(
+    age_group = factor(age_group, 
+          levels = c("mc_infant", "mc_toddler", "mc_preschool")),
+          Region = fct_reorder2(Region, study_year, median_price)) |> 
+  ggplot(mapping = aes(x = study_year, y = median_price, color = Region)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2008,2018,2)) +
+  scale_y_continuous(breaks = seq(100,500,100),
+                     limits = c(100, 500)) +
+  facet_wrap(~ age_group,
+      labeller = as_labeller(c(
+      mc_infant = "Infant",
+      mc_toddler = "Toddler",
+      mc_preschool = "Preschool"
+    ))) +
+  labs(x = "Study Year",
+       y = "",
+       color = "California Region",
+       title = "Weekly Median Price for Center-Based Childcare ($)") +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, 
+        axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8),
+        axis.title.x = element_text(size = 8))
 
 ```
 
@@ -316,6 +889,44 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-2-ex-3
 
+#Lab 4 Question 7
+
+ca_childcare |> 
+  pivot_longer(
+    cols = c(mc_infant, mc_toddler, mc_preschool),
+    names_to = "age_group",
+    values_to = "median_price"
+  ) |> 
+  mutate(
+    age_group = factor(age_group, 
+          levels = c("mc_infant", "mc_toddler", "mc_preschool")),
+          Region = fct_reorder2(Region, study_year, median_price)) |> 
+  ggplot(mapping = aes(x = study_year, y = median_price, color = Region)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2008,2018,2)) +
+  scale_y_continuous(breaks = seq(100,500,100),
+                     limits = c(100, 500)) +
+  facet_wrap(~ age_group,
+      labeller = as_labeller(c(
+      mc_infant = "Infant",
+      mc_toddler = "Toddler",
+      mc_preschool = "Preschool"
+    ))) +
+  labs(x = "Study Year",
+       y = "",
+       color = "California Region",
+       title = "Weekly Median Price for Center-Based Childcare ($)") +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, 
+        axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8),
+        axis.title.x = element_text(size = 8))
+
 ```
 
 -   I can modify the text in my plot to be more readable
@@ -323,12 +934,88 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-2-ex-4
 
+#Lab 4 Question 7
+
+ca_childcare |> 
+  pivot_longer(
+    cols = c(mc_infant, mc_toddler, mc_preschool),
+    names_to = "age_group",
+    values_to = "median_price"
+  ) |> 
+  mutate(
+    age_group = factor(age_group, 
+          levels = c("mc_infant", "mc_toddler", "mc_preschool")),
+          Region = fct_reorder2(Region, study_year, median_price)) |> 
+  ggplot(mapping = aes(x = study_year, y = median_price, color = Region)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2008,2018,2)) +
+  scale_y_continuous(breaks = seq(100,500,100),
+                     limits = c(100, 500)) +
+  facet_wrap(~ age_group,
+      labeller = as_labeller(c(
+      mc_infant = "Infant",
+      mc_toddler = "Toddler",
+      mc_preschool = "Preschool"
+    ))) +
+  labs(x = "Study Year",
+       y = "",
+       color = "California Region",
+       title = "Weekly Median Price for Center-Based Childcare ($)") +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, 
+        axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8),
+        axis.title.x = element_text(size = 8))
+
 ```
 
 -   I can reorder my legend to align with the colors in my plot
 
 ```{r}
 #| label: dvs-2-ex-5
+
+#Lab 4 Question 7 - does this work? Like is it not asking for this?
+
+ca_childcare |> 
+  pivot_longer(
+    cols = c(mc_infant, mc_toddler, mc_preschool),
+    names_to = "age_group",
+    values_to = "median_price"
+  ) |> 
+  mutate(
+    age_group = factor(age_group, 
+          levels = c("mc_infant", "mc_toddler", "mc_preschool")),
+          Region = fct_reorder2(Region, study_year, median_price)) |> 
+  ggplot(mapping = aes(x = study_year, y = median_price, color = Region)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2008,2018,2)) +
+  scale_y_continuous(breaks = seq(100,500,100),
+                     limits = c(100, 500)) +
+  facet_wrap(~ age_group,
+      labeller = as_labeller(c(
+      mc_infant = "Infant",
+      mc_toddler = "Toddler",
+      mc_preschool = "Preschool"
+    ))) +
+  labs(x = "Study Year",
+       y = "",
+       color = "California Region",
+       title = "Weekly Median Price for Center-Based Childcare ($)") +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, 
+        axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8),
+        axis.title.x = element_text(size = 8))
 
 ```
 
@@ -339,12 +1026,64 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-3-1-ex-1
 
+#Challenge 2 Spicy
+
+ggplot(data = surveys,
+       mapping = aes(y = species, x = weight, color = sex)) +
+  geom_boxplot(outliers = FALSE) +
+  scale_color_manual(values = c("F" = "#0c6198", "M" = "#cf797c")) +
+  labs(x = "Species of Organism Near Portal, AZ",
+       y = "Weight (g)",
+       title = "Weight of Different Species Near Portal, AZ, Colored by Sex",
+       subtitle = "Separated by <span style = 'color:#0c6198;'>Female</span>, <span style = 'color:#cf797c;'>Male</span>") +
+  theme(legend.position = "none",
+        plot.subtitle = element_markdown(),
+        )
+
 ```
 
 -   I can use non-standard colors (Example 2)
 
 ```{r}
 #| label: dvs-3-1-ex-2
+
+#Lab 4 Question 7
+
+ca_childcare |> 
+  pivot_longer(
+    cols = c(mc_infant, mc_toddler, mc_preschool),
+    names_to = "age_group",
+    values_to = "median_price"
+  ) |> 
+  mutate(
+    age_group = factor(age_group, 
+          levels = c("mc_infant", "mc_toddler", "mc_preschool")),
+          Region = fct_reorder2(Region, study_year, median_price)) |> 
+  ggplot(mapping = aes(x = study_year, y = median_price, color = Region)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2008,2018,2)) +
+  scale_y_continuous(breaks = seq(100,500,100),
+                     limits = c(100, 500)) +
+  facet_wrap(~ age_group,
+      labeller = as_labeller(c(
+      mc_infant = "Infant",
+      mc_toddler = "Toddler",
+      mc_preschool = "Preschool"
+    ))) +
+  labs(x = "Study Year",
+       y = "",
+       color = "California Region",
+       title = "Weekly Median Price for Center-Based Childcare ($)") +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, 
+        axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8),
+        axis.title.x = element_text(size = 8))
 
 ```
 
@@ -353,12 +1092,16 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-3-2
 
+#Have not done
+
 ```
 
 -   I can choose creative geometries (e.g., `geom_segment()`, `geom_ribbon)()`)
 
 ```{r}
 #| label: dvs-3-3
+
+#not done yet!
 
 ```
 
@@ -369,12 +1112,32 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-4-summarize
 
+#Lab 3 Question 6
+
+teacher_evals_clean |> 
+  summarise(
+    n_teachers = n_distinct(teacher_id),
+    n_courses = n_distinct(course_id)
+  )
+
 ```
 
 -   Example using `across()`
 
 ```{r}
 #| label: dvs-4-across
+
+#Lab 3 Question 12
+
+teacher_evals_clean |> 
+  filter(academic_degree %in% c("dr","prof")) |> 
+  group_by(teacher_id) |> 
+    summarise(
+      pct_resp = mean(resp_share, na.rm = TRUE),
+      across(c(sex,seniority), ~ unique(.x))) |> 
+  ungroup() |> 
+  filter(pct_resp == max(pct_resp) | pct_resp == min(pct_resp))|> 
+  kable()
 
 ```
 
@@ -385,12 +1148,51 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-5-1
 
+#Challenge 4 Table of Means
+
+ca_childcare_long <- ca_childcare |> 
+  pivot_longer(
+    cols = c(mfcc_infant, mfcc_toddler, mfcc_preschool,
+             mc_infant, mc_toddler, mc_preschool),
+    names_to = c("type_care", "age_group"),
+    names_sep = "_",
+    values_to = "median_price") |> 
+  mutate(
+     type_care = case_when(
+      type_care == "mfcc" ~ "Family",
+      type_care == "mc" ~ "Center-based"),
+    age_group = factor(age_group, levels = c("infant", "toddler", "preschool"))
+  )
+table <- ca_childcare_long |> 
+  group_by(type_care, age_group) |> 
+  summarise(
+    mean_median_price = mean(median_price, na.rm = TRUE),
+    .groups = 'drop'
+  ) |> 
+  kable()
+
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dvs-5-2
+
+#Lab 4 Question 5
+
+ca_childcare |> 
+  filter(study_year %in% c("2008","2018")) |> 
+  group_by(Region, study_year) |> 
+  summarise(
+    median_household_income_2018 = median(mhi_2018, na.rm = TRUE),
+    .groups = 'drop'
+  ) |> 
+  pivot_wider(
+    names_from = study_year,
+    values_from = median_household_income_2018,
+    names_prefix = "median_household_income_"
+  ) |> 
+  arrange(desc(median_household_income_2018)) 
 
 ```
 
@@ -401,6 +1203,31 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-6-ex-1
 
+#Challenge 4 Table of Means
+
+ca_childcare_long <- ca_childcare |> 
+  pivot_longer(
+    cols = c(mfcc_infant, mfcc_toddler, mfcc_preschool,
+             mc_infant, mc_toddler, mc_preschool),
+    names_to = c("type_care", "age_group"),
+    names_sep = "_",
+    values_to = "median_price") |> 
+  mutate(
+     type_care = case_when(
+      type_care == "mfcc" ~ "Family",
+      type_care == "mc" ~ "Center-based"),
+    age_group = factor(age_group, levels = c("infant", "toddler", "preschool"))
+  )
+table <- ca_childcare_long |> 
+  group_by(type_care, age_group) |> 
+  summarise(
+    mean_median_price = mean(median_price, na.rm = TRUE),
+    .groups = 'drop'
+  ) |> 
+  kable()
+
+
+
 ```
 
 -   I can modify the text in my table to be more readable (e.g., bold face for column headers)
@@ -408,12 +1235,38 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-6-ex-2
 
+#Haven't done yet
+
 ```
 
 -   I can arrange my table to have an intuitive ordering
 
 ```{r}
 #| label: dvs-6-ex-3
+
+#Challenge 4 Table Creation
+
+ca_childcare_long <- ca_childcare |> 
+  pivot_longer(
+    cols = c(mfcc_infant, mfcc_toddler, mfcc_preschool,
+             mc_infant, mc_toddler, mc_preschool),
+    names_to = c("type_care", "age_group"),
+    names_sep = "_",
+    values_to = "median_price") |> 
+  mutate(
+     type_care = case_when(
+      type_care == "mfcc" ~ "Family",
+      type_care == "mc" ~ "Center-based"),
+    age_group = factor(age_group, levels = c("infant", "toddler", "preschool"))
+  )
+table <- ca_childcare_long |> 
+  group_by(type_care, age_group) |> 
+  summarise(
+    mean_median_price = mean(median_price, na.rm = TRUE),
+    .groups = 'drop'
+  ) |> 
+  kable()
+
 
 ```
 
@@ -424,12 +1277,37 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dvs-7-ex-1
 
+#Haven't done for tables yet
 ```
 
 -   I can modify the layout of my table to be more readable (e.g., `pivot_longer()` or `pivot_wider()`)
 
 ```{r}
 #| label: dvs-7-ex-2
+
+#Challenge 4 Table of Means (I think?)
+
+ca_childcare_long <- ca_childcare |> 
+  pivot_longer(
+    cols = c(mfcc_infant, mfcc_toddler, mfcc_preschool,
+             mc_infant, mc_toddler, mc_preschool),
+    names_to = c("type_care", "age_group"),
+    names_sep = "_",
+    values_to = "median_price") |> 
+  mutate(
+     type_care = case_when(
+      type_care == "mfcc" ~ "Family",
+      type_care == "mc" ~ "Center-based"),
+    age_group = factor(age_group, levels = c("infant", "toddler", "preschool"))
+  )
+table <- ca_childcare_long |> 
+  group_by(type_care, age_group) |> 
+  summarise(
+    mean_median_price = mean(median_price, na.rm = TRUE),
+    .groups = 'drop'
+  ) |> 
+  kable()
+
 
 ```
 
@@ -442,6 +1320,29 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: pe-1-one-call
 
+#Lab 5 Gym Investigation
+
+
+get_fit_now_member |>
+  right_join(get_fit_now_check_in, join_by(id == membership_id)) |> 
+  right_join(person, join_by(person_id == id, name == name)) |>
+  right_join(drivers_license, join_by(license_id == id)) |>  #Joins
+  mutate(check_in_date = make_date(year = str_sub(check_in_date, #Turn check_in_date into an actual date, not int
+                                    start = 1,
+                                    end = 4),
+                                    month = str_sub(check_in_date,
+                                    start = 5,
+                                    end = 6),
+                                    day = str_sub(check_in_date,
+                                    start = 7,
+                                    end = 8))) |> 
+  filter(
+    membership_status == "gold",
+    str_starts(id, "48Z"),
+    check_in_date == as.Date("2018-01-09"),
+    str_detect(as.character(plate_number), "H42W")) |> 
+  select(person_id, name)
+
 ```
 
 -   using `across()`
@@ -449,12 +1350,26 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: pe-1-across
 
+#Lab 3 Question 12
+
+teacher_evals_clean |> 
+  filter(academic_degree %in% c("dr","prof")) |> 
+  group_by(teacher_id) |> 
+    summarise(
+      pct_resp = mean(resp_share, na.rm = TRUE),
+      across(c(sex,seniority), ~ unique(.x))) |> 
+  ungroup() |> 
+  filter(pct_resp == max(pct_resp) | pct_resp == min(pct_resp))|> 
+  kable()
+
 ```
 
 -   using functions from the `map()` family
 
 ```{r}
 #| label: pe-1-map-1
+
+#Not done yet!
 
 ```
 
@@ -465,6 +1380,8 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: pe-2-1
 
+#not yet
+
 ```
 
 -   Example 2: Function that operates on data frames
@@ -472,12 +1389,16 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: pe-2-2
 
+#not yet
+
 ```
 
 -   Example 3: Function that operates on vectors *or* data frames
 
 ```{r}
 #| label: pe-2-3
+
+#not yet
 
 ```
 
@@ -488,6 +1409,18 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: pe-3-across
 
+#Lab 3 Question 12
+
+teacher_evals_clean |> 
+  filter(academic_degree %in% c("dr","prof")) |> 
+  group_by(teacher_id) |> 
+    summarise(
+      pct_resp = mean(resp_share, na.rm = TRUE),
+      across(c(sex,seniority), ~ unique(.x))) |> 
+  ungroup() |> 
+  filter(pct_resp == max(pct_resp) | pct_resp == min(pct_resp))|> 
+  kable()
+
 ```
 
 -   using a `map()` function with **one** input (e.g., `map()`, `map_chr()`, `map_dbl()`, etc.)
@@ -495,12 +1428,16 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: pe-3-map-1
 
+#not done yet
+
 ```
 
 -   using a `map()` function with **more than one** input (e.g., `map_2()` or `pmap()`)
 
 ```{r}
 #| label: pe-3-map-2
+
+#not done yet
 
 ```
 
@@ -511,12 +1448,56 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: pe-4-1
 
+#Lab 3 Question 8 if_any()
+
+teacher_evals_clean |>
+  filter(if_any(.cols = everything(),
+                .fns = ~ is.na(.x)))
+
 ```
 
 -   I can connect a data wrangling pipeline into a `ggplot()`
 
 ```{r}
 #| label: pe-4-2
+
+#Lab 4 Question 7
+
+ca_childcare |> 
+  pivot_longer(
+    cols = c(mc_infant, mc_toddler, mc_preschool),
+    names_to = "age_group",
+    values_to = "median_price"
+  ) |> 
+  mutate(
+    age_group = factor(age_group, 
+          levels = c("mc_infant", "mc_toddler", "mc_preschool")),
+          Region = fct_reorder2(Region, study_year, median_price)) |> 
+  ggplot(mapping = aes(x = study_year, y = median_price, color = Region)) +
+  geom_smooth(method = "loess") +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(breaks = seq(2008,2018,2)) +
+  scale_y_continuous(breaks = seq(100,500,100),
+                     limits = c(100, 500)) +
+  facet_wrap(~ age_group,
+      labeller = as_labeller(c(
+      mc_infant = "Infant",
+      mc_toddler = "Toddler",
+      mc_preschool = "Preschool"
+    ))) +
+  labs(x = "Study Year",
+       y = "",
+       color = "California Region",
+       title = "Weekly Median Price for Center-Based Childcare ($)") +
+  scale_color_manual(values = colorRampPalette(brewer.pal(8, "Accent"))(10)) +
+  theme_bw() +
+  theme(aspect.ratio = 1, 
+        axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        plot.title = element_text(size = 10),
+        legend.title = element_text(size = 9),
+        legend.text = element_text(size = 8),
+        axis.title.x = element_text(size = 8))
 
 ```
 
@@ -529,12 +1510,16 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dsm-1-1
 
+#not done yet
+
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dsm-1-2
+
+#not done yet
 
 ```
 
@@ -545,12 +1530,22 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dsm-2-1
 
+#Challenge 3 chisq.test
+
+chisq.test(teacher_evals_compare$SET_level,
+           teacher_evals_compare$sen_level)
+
 ```
 
 -   Example 2
 
 ```{r}
 #| label: dsm-2-2
+#Lab 2 Question 17 Anova
+
+species_mod <- aov(weight ~ species, data = surveys)
+
+summary(species_mod)
 
 ```
 
@@ -559,11 +1554,20 @@ The following assignments satisfy the above criteria:
 ```{r}
 #| label: dsm-2-3
 
+#Lab 1 Question 9
+
+t.test(len ~ supp, data = ToothGrowth, var.equal = FALSE, alternative = "two.sided")
+
 ```
 
 ## Revising My Thinking
 
 <!-- How did you revise your thinking throughout the course? How did you revise your thinking on the code examples you have provided in your portfolio? -->
+
+I have not revised my thinking in this portfolio, aside from one entry in the beginning in which I subtracted columns from a cleaned dataset, instead of selecting just the ones I needed.
+
+\
+Throughout the course, I have had the need to revise my thinking, with the most frequent offenders being saving an object, multiple function calls in one, and saving an object (yes, that twice). I also need to make some more effort in reading up on the correct functions to use, because I often use a function that is superceded, or not the best option. I need to consult my in-class sheets more.
 
 <!-- For the revisions included in your Portfolio, to help me understand the nature of your revisions, please denote somehow the feedback I provided you (e.g., boldface, italics, colored text) before your revisions. -->
 
@@ -571,8 +1575,16 @@ The following assignments satisfy the above criteria:
 
 <!-- How did you extended your thinking throughout the course? How did you extend your thinking on the code examples you have provided in your portfolio? -->
 
+I have generally extended my thinking in plotting and visualizations. I find it hard to do so in things like dplyr pipelines, because there is generally a correct and quickest solution, but it is interesting to move around, resize, and adjust titles, axes, legend titles, etc. Generally, this is how I've extended my thinking within the portfolio, and otherwise.
+
 ## Peer Support & Collaboration
 
 <!-- Include an image or a description of feedback you gave that you are proud of (either in a peer review or in Discord). -->
 
+![](images/clipboard-2456185821.png)
+
+I just love Nick
+
 <!-- Include a description of how you grew as a collaborator through the weekly pair programming activities.   -->
+
+I had a groupmate who had never done any sort of programming before and had a difficult time remembering syntaxes that we use often in things like piping, and calling data before piping. This trained my patience, and made me really think about why we do everything that we do in programming, so that I could explain it if it was unclear to my groupmate why we did certain things.
