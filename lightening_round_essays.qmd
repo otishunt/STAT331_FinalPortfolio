@@ -8,19 +8,19 @@ editor: visual
 
 1.  Finish the sentence with another student’s name: "If \[Name of Student\] doesn’t earn an A, then nobody should, because..." Explain your choice and your reasoning.
 
-    Isaiah (I don't know his last name, he's the biology master's student), because I was impressed that although he had never done programming, he was a great programmer in that he didn't just rush into typing things and was quickly understanding the functions we used, for what purpose, and how they worked.
+    If Isaiah (I don't know his last name, he's the biology master's student) doesn't earn an A, then nobody should, because I was impressed that although he had never done programming, he was a great programmer in that he didn't just rush into typing things and was quickly understanding the functions we used, for what purpose, and how they worked.
 
 2.  What was the most difficult part of the class for you? List a general topic, a specific problem, a kind of work we did, etc. and explain why.
 
-    Generally, pivoting is difficult, because I feel like the arguments aren't so obvious as to what they do.
+    I think that pivoting has just been the most difficult topic, because I understand it at the level of being able to recognize when it is needed, and which kind, but I have a hard time with the arguments sometimes.
 
 3.  What was the easiest part of the class for you? Explain why.
 
-    I think relational data since I've taken so many classes on relational data and it has been reviewed (so many times).
+    I think most of the dplyr things because I have taken classes with pandas, SQL, and other classes where I've used R, and I think the purpose of all of those actions (select, filter, etc.) have been covered enough times where it is now second nature.
 
 4.  What part of the class surprised or interested you the most? Explain why.
 
-    I think the most interesting part will be functions, since I like my algorithm design class now.
+    The most interesting part of the class was probably the table creation, because the people who wrote the gt and kable packages really enabled the user to do so many different things and make so many big or small adjustments to their table.
 
 5.  Give one piece of advice to a student just beginning a quarter of STAT 331 that will help them be successful in learning.
 
